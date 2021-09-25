@@ -1,0 +1,14 @@
+.grid:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.ingredient-group{
+    float: left;
+    width: 50%;
+}
+
+.validationError{
+    color: red;
+}

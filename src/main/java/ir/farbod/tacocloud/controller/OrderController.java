@@ -1,7 +1,9 @@
 package ir.farbod.tacocloud.controller;
 
 import ir.farbod.tacocloud.entity.Order;
+import ir.farbod.tacocloud.service.OrderService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
@@ -16,6 +18,13 @@ import javax.validation.Valid;
 @RequestMapping("/orders")
 public class OrderController {
 
+    private OrderService orderService;
+
+    @Autowired
+    public OrderController(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
     @GetMapping("/current")
     public String orderForm(Model model){
         model.addAttribute("order", new Order());
@@ -27,7 +36,8 @@ public class OrderController {
         if(errors.hasErrors())
             return "order";
 
-        log.info("Order submited : " + order);
+        orderService.save(order);
+        log.info("******   Order submited : " + order);
         return "redirect:/";
     }
 }

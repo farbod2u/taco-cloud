@@ -1,0 +1,24 @@
+version: "3"
+services:
+  taco-cloud-app:
+    build: .
+    image: taco-cloud-app:1.0
+    ports:
+      - "8080:8080"
+    networks:
+      - taco-2-db
+    depends_on:
+      - taco-mysql-db
+    container_name: taco-cloud-app
+
+  taco-mysql-db:
+    image: mysql
+    networks:
+      - taco-2-db
+    environment:
+      - MYSQL_ROOT_PASSWORD=sudnxp5698884
+      - MYSQL_DATABASE=taco
+    container_name: taco-mysql-db
+
+networks:
+  taco-2-db:

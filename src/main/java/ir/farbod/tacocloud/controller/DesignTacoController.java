@@ -4,6 +4,7 @@ import ir.farbod.tacocloud.entity.Ingredient;
 import ir.farbod.tacocloud.entity.Ingredient.Type;
 import ir.farbod.tacocloud.entity.Taco;
 import ir.farbod.tacocloud.service.IngredientService;
+import ir.farbod.tacocloud.service.TacoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,10 +24,12 @@ import java.util.stream.Collectors;
 public class DesignTacoController {
 
     private IngredientService ingredientService;
+    private TacoService tacoService;
 
     @Autowired
-    public DesignTacoController(IngredientService ingredientService) {
+    public DesignTacoController(IngredientService ingredientService, TacoService tacoService) {
         this.ingredientService = ingredientService;
+        this.tacoService = tacoService;
     }
 
     @GetMapping
@@ -36,7 +39,6 @@ public class DesignTacoController {
             model.addAttribute(type.toString().toLowerCase(), filterByType(ingredients, type));
 
         model.addAttribute("design", new Taco());
-
         return "design";
     }
 
@@ -54,7 +56,8 @@ public class DesignTacoController {
             return "design";
         }
 
-        log.info("Proccessing design : " + design);
+        tacoService.save(design);
+        log.info("******  Proccessing design : " + design);
         return "redirect:/orders/current";
     }
 }

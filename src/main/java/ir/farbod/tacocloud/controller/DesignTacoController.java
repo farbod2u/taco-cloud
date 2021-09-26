@@ -13,7 +13,10 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -47,17 +50,23 @@ public class DesignTacoController {
     }
 
     @PostMapping
-    public String proccessDesign(@Valid Taco design, Errors errors, Model model) {
+    public ModelAndView proccessDesign(HttpSession session, @Valid Taco design, Errors errors, Model model) {
         if (errors.hasErrors()) {
             Type[] types = Type.values();
             for (Type type : types)
                 model.addAttribute(type.toString().toLowerCase(), filterByType(ingredientService.getAll(), type));
             model.addAttribute("design", design);
-            return "design";
+            return new ModelAndView("design");
         }
 
-        tacoService.save(design);
+        ModelAndView view = new ModelAndView(new RedirectView("/orders/current"));
+        design = tacoService.save(design);
+        //view.addObject("taco", design);
+
+        session.setAttribute("taco", design);
+
         log.info("******  Proccessing design : " + design);
-        return "redirect:/orders/current";
+        //return "redirect:/orders/current";
+        return view;
     }
 }
